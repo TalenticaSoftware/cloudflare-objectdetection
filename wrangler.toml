@@ -1,0 +1,9 @@
+name = "obj-detect-worker"
+type = "webpack"
+account_id = "a19220e5edfdec0d9c3257ba3d357f6e"
+route = ''
+zone_id = ''
+usage_model = ''
+compatibility_flags = []
+workers_dev = true
+compatibility_date = "2022-07-25"
