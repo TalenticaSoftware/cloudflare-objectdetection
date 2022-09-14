@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>object detector</title>
+</head>
+
+<body style="background-color:powderblue;">
+    <style>
+        .center {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 5px solid #808080;
+            padding: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
+    <script>
+        async function detectObjectinImage() {
+            console.log('objectdetect invoked');
+            console.log('start : ' + getFullTimestamp());
+            var tensor_obj = tf.browser.fromPixels(document.getElementById('output'));
+            const myArray = new Int32Array(tensor_obj.bufferSync().values);
+            // Http request
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log('end : ' + getFullTimestamp());
+                    const detectedObject = document.getElementById('objects');
+                    detectedObject.innerHTML = ' ' + xhr.responseText;
+                }
+            }
+            xhr.open("POST", 'http://127.0.0.1:8000', true);
+            //xhr.open("POST", 'http://127.0.0.1:8000', true);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(JSON.stringify(myArray));
+        }
+
+        var loadFile = function (event) {
+            const detectedObject = document.getElementById('objects');
+            detectedObject.innerHTML = '';
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        }
+
+        function getFullTimestamp() {
+			const pad = (n, s = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+			const d = new Date();
+
+			return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+		}
+    </script>
+    <div class="center">
+        <input type="file" id="photo" name="photo" onchange="loadFile(event)" accept="image/*">
+        <p><img id="output" width="400" height="400" /></p>
+
+        <p>
+            <button onclick="detectObjectinImage()">Detect</button>
+            <span id="objects"></span>
+        </p>
+    </div>
+</body>
+
+</html>
