@@ -20,21 +20,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
     <script>
         async function detectObjectinImage() {
-            console.log('objectdetect invoked');
-            console.log('start : ' + getFullTimestamp());
             var tensor_obj = tf.browser.fromPixels(document.getElementById('output'));
             const myArray = new Int32Array(tensor_obj.bufferSync().values);
             // Http request
+            var a = new Date();
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log('end : ' + getFullTimestamp());
-                    const detectedObject = document.getElementById('objects');
-                    detectedObject.innerHTML = ' ' + xhr.responseText;
+                    var b = new Date();
+                    var difference = Math.round(((b - a) / 1000) * 100) / 100;
+                    document.getElementById('objects').innerHTML = ' ' + xhr.responseText;
+                    document.getElementById('timeTaken').innerHTML = 'Time taken : ' + difference + ' seconds';
                 }
             }
-            xhr.open("POST", 'http://43.205.94.126:8000', true);
-            //xhr.open("POST", 'http://127.0.0.1:8000', true);
+            xhr.open("POST", 'http://127.0.0.1:8000', true);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send(JSON.stringify(myArray));
         }
@@ -46,12 +45,6 @@
             image.src = URL.createObjectURL(event.target.files[0]);
         }
 
-        function getFullTimestamp() {
-			const pad = (n, s = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
-			const d = new Date();
-
-			return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
-		}
     </script>
     <div class="center">
         <input type="file" id="photo" name="photo" onchange="loadFile(event)" accept="image/*">
@@ -60,6 +53,9 @@
         <p>
             <button onclick="detectObjectinImage()">Detect</button>
             <span id="objects"></span>
+        </p>
+        <p>
+            <span id="timeTaken"></span>
         </p>
     </div>
 </body>

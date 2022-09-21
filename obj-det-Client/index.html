@@ -21,23 +21,14 @@
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
 	<script>
 		let modelPromise;
-		window.onload = () => {
-			//loadModel();
-		}
-
-		async function loadModel() {
-			console.log('start : ' + getFullTimestamp());
-			modelPromise = await cocoSsd.load();
-			console.log('end : ' + getFullTimestamp());
-		}
 		async function detectObjectinImage() {
 			console.log('objectdetect invoked');
-			console.log('start : ' + getFullTimestamp());
 			const img = document.getElementById('output');
 			let objects = '';
+			var a = new Date();
 			modelPromise = await cocoSsd.load();
 			const result = await modelPromise.detect(img);
-			console.log('end : ' + getFullTimestamp());
+
 			if (result.length < 1) {
 				objects = objects + 'None'
 			}
@@ -46,16 +37,10 @@
 					objects = objects + result[i].class + ' ';
 				}
 			}
-			console.log(objects);
-			const detectedObject = document.getElementById('objects');
-			detectedObject.innerHTML = ' ' + objects;
-		}
-
-		function getFullTimestamp() {
-			const pad = (n, s = 2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
-			const d = new Date();
-
-			return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+			var b = new Date();
+			var difference = Math.round(((b - a) / 1000) * 100) / 100;
+			document.getElementById('objects').innerHTML = ' ' + objects;
+			document.getElementById('timeTaken').innerHTML = 'Time taken : ' + difference + ' seconds';
 		}
 
 
@@ -73,6 +58,9 @@
 		<p>
 			<button onclick="detectObjectinImage()">Detect</button>
 			<span id="objects"></span>
+		</p>
+		<p>
+			<span id="timeTaken"></span>
 		</p>
 	</div>
 </body>
